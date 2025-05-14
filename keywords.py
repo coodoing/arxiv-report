@@ -1,3 +1,25 @@
+import os
+import logging
+from enum import Enum
+
+
+SUBSCRIBED_TOPICS = ['cs.AI', 'cs.CL', 'cs.CV', 'cs.LG', 'cs.RO', 'cs.DC', 'cs.AR']
+SAVE_DIR = 'arxiv_data'
+IMPORTANT_ORGS = ['MIT', 'Stanford', 'Google Research']
+
+ARXIV_API_URL = 'http://export.arxiv.org/api/query'
+
+if not os.path.exists(SAVE_DIR):
+    os.makedirs(SAVE_DIR)
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+
+class Conference(Enum):
+    ARXIV = "arxiv"
+    MLSYS2025 = "mlsys2025"
+
+
 researcher_names_only = [
     "John Schulman",
     "Lilian Weng",
