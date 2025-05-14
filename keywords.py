@@ -4,7 +4,7 @@ from enum import Enum
 
 
 SUBSCRIBED_TOPICS = ['cs.AI', 'cs.CL', 'cs.CV', 'cs.LG', 'cs.RO', 'cs.DC', 'cs.AR']
-SAVE_DIR = 'arxiv_data'
+SAVE_DIR = 'papers_data'
 IMPORTANT_ORGS = ['MIT', 'Stanford', 'Google Research']
 
 ARXIV_API_URL = 'http://export.arxiv.org/api/query'

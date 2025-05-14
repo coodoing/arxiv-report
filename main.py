@@ -105,8 +105,8 @@ def analyze_papers_text(conference, all_papers):
 
 
 if __name__ == '__main__':
-    #all_papers = get_today_arxivpapers() 
-    #analyzed_papers = analyze_arxivpapers_text(Conference.ARXIV, all_papers)
+    all_papers = get_today_arxivpapers() 
+    analyzed_papers = analyze_arxivpapers_text(Conference.ARXIV, all_papers)
 
-    all_papers = get_mlsyspapers()
-    analyzed_papers = analyze_papers_text(Conference.MLSYS2025, all_papers)
+    # all_papers = get_mlsyspapers()
+    # analyzed_papers = analyze_papers_text(Conference.MLSYS2025, all_papers)

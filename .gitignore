@@ -3,7 +3,7 @@ Thumbs.db
 *.iml
 .idea
 
-arxiv_data/*.json
+papers_data/*.json
 
 __pycache__/
 *.pyc
