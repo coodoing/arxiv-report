@@ -87,7 +87,7 @@ def analyze_papers_text(conference, all_papers):
         logging.info(f"线程{threading.current_thread().name} 处理完成 {len(batch_papers)} 篇论文")
         return len(batch_papers)
 
-    batch_size = 10 # 假设每批处理10 篇论文， 每篇论文大约200-300 tokens
+    batch_size = 5 # 每批处理5 篇论文， 每篇论文大约200-300 tokens。保证输出内容
     with ThreadPoolExecutor(max_workers=20) as executor:
         results = list(executor.map(process_batch, [all_papers[i:i + batch_size] for i in range(0, len(all_papers), batch_size)]))
 
@@ -106,7 +106,7 @@ def analyze_papers_text(conference, all_papers):
 
 if __name__ == '__main__':
     all_papers = get_today_arxivpapers() 
-    analyzed_papers = analyze_arxivpapers_text(Conference.ARXIV, all_papers)
+    analyzed_papers = analyze_papers_text(Conference.ARXIV, all_papers)
 
     # all_papers = get_mlsyspapers()
     # analyzed_papers = analyze_papers_text(Conference.MLSYS2025, all_papers)
