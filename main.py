@@ -17,6 +17,7 @@ from openai import OpenAI
 from keywords import *
 from arxiv_papers_tool import get_today_arxivpapers, get_today_arxivfile
 from mlsys2025_papers_tool import get_mlsyspapers
+from isca2025_papers_tool import get_iscapapers
 
 def get_client():
     client = OpenAI(
@@ -58,7 +59,15 @@ def analyze_papers_fileid():
     return full_content
 
 
-def analyze_papers_text(conference, all_papers):
+def analyze_papers_text(conference):
+
+    if conference == Conference.ARXIV:
+        all_papers = get_today_arxivpapers()
+    elif conference == Conference.MLSYS2025:
+        all_papers = get_mlsyspapers()
+    elif conference == Conference.ISCA2025:
+        all_papers = get_iscapapers()
+
     client = get_client()
     full_content = ""
     lock = threading.Lock()
@@ -67,7 +76,7 @@ def analyze_papers_text(conference, all_papers):
     def process_batch(batch_papers):
         nonlocal full_content
         completion = client.chat.completions.create(
-            model="qwen-long",
+            model="qwen-long-latest",
             messages=[
                 {'role': 'system', 'content': 'You are a helpful assistant.'},
                 {'role': 'system', 'content': str(batch_papers)},
@@ -99,14 +108,12 @@ def analyze_papers_text(conference, all_papers):
         report_file_path = os.path.join(SAVE_DIR, f'{timestamp}_arxiv_report.md')
     elif conference == Conference.MLSYS2025:
         report_file_path = os.path.join(SAVE_DIR, f'mlsys2025_report.md')
+    elif conference == Conference.ISCA2025:
+        report_file_path = os.path.join(SAVE_DIR, f'isca2025_report.md')
     with open(report_file_path, 'w', encoding='utf-8') as f:
         f.write(full_content)
 
 
-
 if __name__ == '__main__':
-    all_papers = get_today_arxivpapers() 
-    analyzed_papers = analyze_papers_text(Conference.ARXIV, all_papers)
-
-    # all_papers = get_mlsyspapers()
-    # analyzed_papers = analyze_papers_text(Conference.MLSYS2025, all_papers)
+    analyzed_papers = analyze_papers_text(Conference.ARXIV)
+    #analyzed_papers = analyze_papers_text(Conference.ISCA2025)

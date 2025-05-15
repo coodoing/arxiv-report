@@ -18,6 +18,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 class Conference(Enum):
     ARXIV = "arxiv"
     MLSYS2025 = "mlsys2025"
+    ISCA2025 = "isca2025"
 
 
 researcher_names_only = [
