@@ -73,35 +73,45 @@ def analyze_papers_text(conference):
     lock = threading.Lock()
     logging.info(f"开始批处理 {len(all_papers)} 篇论文")
 
+    # def process_batch(batch_papers):
+    #     nonlocal full_content
+    #     completion = client.chat.completions.create(
+    #         model="qwen-long-latest",
+    #         messages=[
+    #             {'role': 'system', 'content': 'You are a helpful assistant.'},
+    #             {'role': 'system', 'content': str(batch_papers)},
+    #             {'role': 'user', 'content': '对输入每篇论文内容进行理解，输出内容格式固定为：标题，摘要，论文亮点'}
+    #         ],
+    #         stream=True,
+    #         stream_options={"include_usage": True}
+    #     )
+    #     temp_content = ""
+    #     for chunk in completion:
+    #         if chunk.choices and chunk.choices[0].delta.content:
+    #             temp_content += chunk.choices[0].delta.content
+    #             #print(chunk.model_dump())
+    #     with lock:
+    #         full_content += temp_content
+    #     ##time.sleep(random.randint(1,5))
+    #     logging.info(f"线程{threading.current_thread().name} 处理完成 {len(batch_papers)} 篇论文")
+    #     return len(batch_papers)
+
     def process_batch(batch_papers):
         nonlocal full_content
-        completion = client.chat.completions.create(
-            model="qwen-long-latest",
-            messages=[
-                {'role': 'system', 'content': 'You are a helpful assistant.'},
-                {'role': 'system', 'content': str(batch_papers)},
-                {'role': 'user', 'content': '对输入每篇论文内容进行理解，输出内容格式固定为：标题，摘要，论文亮点'}
-            ],
-            stream=True,
-            stream_options={"include_usage": True}
-        )
-        temp_content = ""
-        for chunk in completion:
-            if chunk.choices and chunk.choices[0].delta.content:
-                temp_content += chunk.choices[0].delta.content
-                #print(chunk.model_dump())
-        with lock:
-            full_content += temp_content
+        for paper in batch_papers:
+            temp_content = '### [' + paper['title'] + '](' + paper['arxiv_url'] + ')' + '\n\n'
+            temp_content += paper['abstract'] + '\n\n'
+            temp_content += '---\n\n'
+            full_content += temp_content + '\n'
         ##time.sleep(random.randint(1,5))
         logging.info(f"线程{threading.current_thread().name} 处理完成 {len(batch_papers)} 篇论文")
         return len(batch_papers)
 
-    batch_size = 5 # 每批处理5 篇论文， 每篇论文大约200-300 tokens。保证输出内容
+    batch_size = 5 # 每批处理5 篇论文， 每篇论文大约200-300 tokens。保证输出内容完善
     with ThreadPoolExecutor(max_workers=20) as executor:
         results = list(executor.map(process_batch, [all_papers[i:i + batch_size] for i in range(0, len(all_papers), batch_size)]))
 
-    total_processed = sum(results)
-    logging.info(f"一共处理了 {total_processed} 篇论文")
+    logging.info(f"一共处理了 {sum(results)} 篇论文")
 
     if conference == Conference.ARXIV:
         timestamp = datetime.now().strftime('%Y%m%d')
@@ -114,6 +124,7 @@ def analyze_papers_text(conference):
         f.write(full_content)
 
 
+# 定时20:10执行，论文在晚8点发布
 if __name__ == '__main__':
     analyzed_papers = analyze_papers_text(Conference.ARXIV)
     #analyzed_papers = analyze_papers_text(Conference.ISCA2025)
