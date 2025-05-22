@@ -19,6 +19,7 @@ from arxiv_papers_tool import get_today_arxivpapers, get_today_arxivfile
 from mlsys2025_papers_tool import get_mlsyspapers
 from isca2025_papers_tool import get_iscapapers
 
+
 def get_client():
     client = OpenAI(
         api_key=os.getenv("DASHSCOPE_API_KEY"),
@@ -68,8 +69,8 @@ def analyze_papers_text(conference):
     elif conference == Conference.ISCA2025:
         all_papers = get_iscapapers()
 
-    client = get_client()
     full_content = ""
+    client = get_client()
     lock = threading.Lock()
     logging.info(f"开始批处理 {len(all_papers)} 篇论文")
 
