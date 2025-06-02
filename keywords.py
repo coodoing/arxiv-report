@@ -19,6 +19,7 @@ class Conference(Enum):
     ARXIV = "arxiv"
     MLSYS2025 = "mlsys2025"
     ISCA2025 = "isca2025"
+    ICRA2025 = "icra2025"
 
 
 researcher_names_only = [

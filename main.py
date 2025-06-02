@@ -18,6 +18,7 @@ from keywords import *
 from arxiv_papers_tool import get_today_arxivpapers, get_today_arxivfile
 from mlsys2025_papers_tool import get_mlsyspapers
 from isca2025_papers_tool import get_iscapapers
+from icra2025_papers_tool import get_icrapapers
 
 
 def get_client():
@@ -68,6 +69,8 @@ def analyze_papers_text(conference):
         all_papers = get_mlsyspapers()
     elif conference == Conference.ISCA2025:
         all_papers = get_iscapapers()
+    elif conference == Conference.ICRA2025:
+        all_papers = get_icrapapers()
 
     full_content = ""
     client = get_client()
@@ -100,7 +103,8 @@ def analyze_papers_text(conference):
     def process_batch(batch_papers):
         nonlocal full_content
         for paper in batch_papers:
-            temp_content = '### [' + paper['title'] + '](' + paper['arxiv_url'] + ')' + '\n\n'
+            url = paper['arxiv_url'] if 'arxiv_url' in paper else paper['paper_url']
+            temp_content = '### [' + paper['title'] + '](' + url + ')' + '\n\n'
             temp_content += paper['abstract'] + '\n\n'
             temp_content += '---\n\n'
             full_content += temp_content + '\n'
@@ -121,11 +125,12 @@ def analyze_papers_text(conference):
         report_file_path = os.path.join(SAVE_DIR, f'mlsys2025_report.md')
     elif conference == Conference.ISCA2025:
         report_file_path = os.path.join(SAVE_DIR, f'isca2025_report.md')
+    elif conference == Conference.ICRA2025:
+        report_file_path = os.path.join(SAVE_DIR, f'icra2025_report.md')  
     with open(report_file_path, 'w', encoding='utf-8') as f:
         f.write(full_content)
 
 
 # 定时20:10执行，论文在晚8点发布
 if __name__ == '__main__':
-    analyzed_papers = analyze_papers_text(Conference.ARXIV)
-    #analyzed_papers = analyze_papers_text(Conference.ISCA2025)
+    analyzed_papers = analyze_papers_text(Conference.ICRA2025)
